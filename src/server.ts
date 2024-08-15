@@ -1,20 +1,31 @@
-// Import the 'express' module
 import express, { Request, Response } from 'express'
+import { Sequelize } from 'sequelize'
+import dotenv from 'dotenv'
 
-// Create an Express application
+dotenv.config()
+
 const app = express()
-
-// Set the port number for the server
 const port: number = 3001
 
-// Define a route for the root path ('/')
+const sequelize = new Sequelize(process.env.DB_NAME!, process.env.DB_USER!, process.env.DB_PASSWORD!, {
+  host: process.env.DB_HOST,
+  dialect: 'postgres',
+  logging: false,
+})
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.')
+  })
+  .catch((error: Error) => {
+    console.error('Unable to connect to the database:', error)
+  })
+
 app.get('/', (req: Request, res: Response) => {
-  // Send a response to the client
   res.send('Hello, TypeScript + Node.js + Express!')
 })
 
-// Start the server and listen on the specified port
 app.listen(port, () => {
-  // Log a message when the server is successfully running
   console.log(`Server is running on http://localhost:${port}`)
 })
