@@ -1,39 +1,44 @@
-'use strict'
-const { Model } = require('sequelize')
-module.exports = (sequelize, DataTypes) => {
-  class NotebookChapters extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  }
-  NotebookChapters.init(
-    {
-      title: DataTypes.STRING,
-      notes: DataTypes.BLOB,
-      notebookId: DataTypes.NUMBER,
-      parentNotebookChapterId: DataTypes.NUMBER,
-    },
-    {
-      sequelize,
-      modelName: 'NotebookChapters',
-    }
-  )
+import { Model, DataTypes, BuildOptions } from 'sequelize'
+import { sequelize } from './index'
 
-  NotebookChapters.associate = function (models) {
-    NotebookChapters.belongsTo(models.Notebooks, {
-      foreignKey: 'notebookId',
-      onDelete: 'CASCADE',
-    })
-    NotebookChapters.belongsTo(models.NotebookChapters, {
-      foreignKey: 'parentNotebookChapterId',
-      onDelete: 'CASCADE',
-    })
-  }
-
-  return NotebookChapters
+export interface INotebookChapter extends Model {
+  id: number
+  title: string
+  notes: string
+  notebookId: number
+  parentNotebookChapterId: number
 }
+
+export type IModelStatic<T> = typeof Model & {
+  associate(): void
+  new (values?: object, options?: BuildOptions): T
+}
+
+export const notebookChapterTableName = 'NotebookChapters'
+
+export const NotebookChapters = <IModelStatic<INotebookChapter>>sequelize.define(notebookChapterTableName, {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true,
+  },
+  title: {
+    type: DataTypes.STRING,
+  },
+  notes: {
+    type: DataTypes.STRING,
+  },
+  notebookId: {
+    type: DataTypes.INTEGER,
+  },
+  parentNotebookChapterId: {
+    type: DataTypes.INTEGER,
+  },
+
+  createdAt: {
+    type: DataTypes.DATE,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+  },
+})
