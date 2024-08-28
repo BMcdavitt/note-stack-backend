@@ -13,6 +13,13 @@ router.get('/:id', async (req, res) => {
   res.send(notebookChapter)
 })
 
+router.get('/notebook/:notebookId', async (req, res) => {
+  const notebookChapters = await NotebookChapters.findAll({
+    where: { notebookId: req.params.notebookId },
+  })
+  res.send(notebookChapters)
+})
+
 router.post('/', async (req, res) => {
   const notebookChapter = await NotebookChapters.create(req.body)
   res.send(notebookChapter)
